@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<info>
+	<infoitem key="UD_row_actualite" value="name:id_anonce;datatype:int,name:titre;datatype:blob,name:anonce;datatype:blob,name:type;datatype:string,name:statut;datatype:string" />
+</info>

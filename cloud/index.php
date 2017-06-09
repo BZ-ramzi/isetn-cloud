@@ -1,3 +1,41 @@
+<?php require_once('../Connections/isetn.php'); ?>
+<?php
+session_start();
+
+mysql_select_db($database_isetn, $isetn);
+$query_row_demande = "SELECT * FROM demande";
+$row_demande = mysql_query($query_row_demande, $isetn) or die(mysql_error());
+$row_row_demande = mysql_fetch_assoc($row_demande);
+$totalRows_row_demande = mysql_num_rows($row_demande);
+
+$colname_row_res_demande = "-1";
+if (isset($_SESSION['cn'])) {
+  $colname_row_res_demande = (get_magic_quotes_gpc()) ? $_SESSION['cn'] : addslashes($_SESSION['cn']);
+}
+mysql_select_db($database_isetn, $isetn);
+$query_row_res_demande = sprintf("SELECT * FROM resultat_demande WHERE utilisateur = '%s'", $colname_row_res_demande);
+$row_res_demande = mysql_query($query_row_res_demande, $isetn) or die(mysql_error());
+$row_row_res_demande = mysql_fetch_assoc($row_res_demande);
+$totalRows_row_res_demande = mysql_num_rows($row_res_demande);
+
+mysql_select_db($database_isetn, $isetn);
+$query_row_cout_dem = "SELECT * FROM demande WHERE id_service = 2";
+$row_cout_dem = mysql_query($query_row_cout_dem, $isetn) or die(mysql_error());
+$row_row_cout_dem = mysql_fetch_assoc($row_cout_dem);
+$totalRows_row_cout_dem = mysql_num_rows($row_cout_dem);
+
+error_reporting(0);
+
+
+if(isset($_GET['out'])) {
+	// destroy session
+	session_unset();
+	$_SESSION = array();
+	unset($_SESSION['user'],$_SESSION['access']);
+	session_destroy();
+	header ('Location: ../dashboard/');
+}
+?>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -17,14 +55,206 @@
     <link type="text/css" href="../assets/fonts/themify-icons/themify-icons.css" rel="stylesheet">              <!-- Themify Icons -->
     <link type="text/css" href="../assets/css/styles.css" rel="stylesheet">                                     <!-- Core CSS with all styles -->
 
+    <link type="text/css" href="../assets/plugins/pines-notify/pnotify.css" rel="stylesheet">
     <link type="text/css" href="../assets/plugins/codeprettifier/prettify.css" rel="stylesheet">                <!-- Code Prettifier -->
     <link type="text/css" href="../assets/plugins/iCheck/skins/minimal/blue.css" rel="stylesheet">              <!-- iCheck -->
    <link rel="icon" type="image/x-icon" href="../assets/img/favicon/fav.png" />
     
+	 <style type="text/css">
+  
+.content {
+    padding: 30px 0;
+}
 
-    </head>
+/***
+Pricing table
+***/
+.pricing {
+  position: relative;
+  margin-bottom: 15px;
+  border: 3px solid #eee;
+}
 
-    <body class="animated-content">
+.pricing-active {
+  border: 3px solid #36d7ac;
+  margin-top: -10px;
+  box-shadow: 7px 7px rgba(54, 215, 172, 0.2);
+}
+
+.pricing:hover {
+  border: 3px solid #36d7ac;
+}
+
+.pricing:hover h4 {
+  color: #36d7ac;
+}
+
+.pricing-head {
+  text-align: center;
+}
+
+.pricing-head h3,
+.pricing-head h4 {
+  margin: 0;
+  line-height: normal;
+}
+
+.pricing-head h3 span,
+.pricing-head h4 span {
+  display: block;
+  margin-top: 5px;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.pricing-head h3 {
+  font-weight: 300;
+  color: #fafafa;
+  padding: 16px 0;
+  font-size: 20px;
+  background: #009688;
+  border-bottom: solid 1px #41b91c;
+}
+
+.pricing-head h4 {
+  color: #bac39f;
+  padding: 5px 0;
+  font-size: 54px;
+  font-weight: 300;
+  background: #fbfef2;
+  border-bottom: solid 1px #f5f9e7;
+}
+
+.pricing-head-active h4 {
+  color: #36d7ac;
+}
+
+.pricing-head h4 i {
+  top: -8px;
+  font-size: 28px;
+  font-style: normal;
+  position: relative;
+}
+
+.pricing-head h4 span {
+  top: -10px;
+  font-size: 14px;
+  font-style: normal;
+  position: relative;
+}
+
+/*Pricing Content*/
+.pricing-content li {
+  color: #888;
+  font-size: 12px;
+  padding: 7px 15px;
+  border-bottom: solid 1px #f5f9e7;
+}
+
+/*Pricing Footer*/
+.pricing-footer {
+  color: #777;
+  font-size: 11px;
+  line-height: 17px;
+  text-align: center;
+  padding: 0 20px 19px;
+}
+
+/*Priceing Active*/
+.price-active,
+.pricing:hover {
+  z-index: 9;
+}
+
+.price-active h4 {
+  color: #36d7ac;
+}
+
+.no-space-pricing .pricing:hover {
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.no-space-pricing .price-active .pricing-head h4,
+.no-space-pricing .pricing:hover .pricing-head h4 {
+  color: #36d7ac;
+  padding: 15px 0;
+  font-size: 80px;
+  transition: color 0.5s ease-in-out;
+}
+
+.yellow-crusta.btn {
+  color: #FFFFFF;
+  background-color: #f3c200;
+      font-weight: 100;
+}
+.yellow-crusta.btn:hover,
+.yellow-crusta.btn:focus,
+.yellow-crusta.btn:active,
+.yellow-crusta.btn.active {
+    color: #FFFFFF;
+    background-color: #cfa500;
+}
+    </style>
+
+<script>
+function mynotif1() {
+
+   new PNotify({
+								title: 'Votre demande a été envoyée',
+								text: 'Votre demande est en cours de traitement par l\'administrateur !',
+								type: 'success',
+								delay: 2e3,
+								icon: 'ti ti-check',
+								styling: 'fontawesome'
+							});
+}
+
+
+function mynotif2() {
+new PNotify({
+								title: 'Votre demande a échoué',
+								text: 'Il faut faire une autre demande.',
+								delay: 2e3,
+								icon: 'ti ti-info',
+								styling: 'fontawesome'
+							});
+}
+
+							
+function mynotif3() {							
+new PNotify({
+								title: 'Erreur !',
+								text: 'Il y\'a une erreur.',
+								type: 'error',
+								delay: 2e3,
+								icon: 'ti ti-close',
+								styling: 'fontawesome'
+							});		
+}
+					
+</script>
+
+
+</head>
+	
+	
+<?php if($_GET['alert']=="1" && isset($_SESSION['access'])){ ?>
+
+    <body onLoad="mynotif1()" class="animated-content">
+	
+	<?php } else if($_GET['alert']=="2" && isset($_SESSION['access'])){ ?>
+	
+	 <body onload="mynotif2()" class="animated-content">
+	 
+	<?php } else if($_GET['alert']=="3" && isset($_SESSION['access'])){ ?>
+	
+	 <body onload="mynotif3()" class="animated-content">
+	
+	<?php  } else { ?>
+	
+	    <body class="animated-content">
+
+	<?php } ?>
         
         <header id="topnav" class="navbar navbar-teal navbar-fixed-top" role="banner">
 
@@ -47,12 +277,12 @@
 
 	<li class="toolbar-icon-bg hidden-xs">
             <a href="http://www.isetn.rnu.tn/" target="_blank"><span class="icon-bg"><i class="ti ti-world"></i></span></a>
-        </li>
+      </li>
 
 
   <li class="toolbar-icon-bg hidden-xs">
             <a href="../dashboard/"><span class="icon-bg"><i class="ti ti-view-grid"></i></span></i></a>
-        </li>
+      </li>
 
 		
 		 <li class="toolbar-icon-bg hidden-xs" id="trigger-fullscreen">
@@ -69,9 +299,16 @@
 		
 	
 		<li class="dropdown toolbar-icon-bg">
+					<?php if (!isset($_SESSION['access'])) {  ?>
+
+
 			<a href="#" class="dropdown-toggle username" data-toggle="dropdown">
 				<img class="img-circle" src="../assets/demo/avatar/avatar_15.png" alt="" />
 			</a>
+
+
+
+
 			<ul class="dropdown-menu userinfo arrow">
 
 			<li><a href="../login/"><i class="ti ti-shift-left"></i><span>Se Connecter</span></a></li>
@@ -80,9 +317,29 @@
 				
 				<li class="divider"></li>
 
-				<li><a href="../resetpassword/"><i class="ti ti-settings"></i><span>Changer mot de passe</span></a></li>
+				<li><a href="../reglements/"><i class="ti  ti-info-alt"></i><span>Règlements et directives</span></a></li>
 			
 			</ul>
+
+<?php } else {?>
+
+
+		<a href="#" class="dropdown-toggle username" data-toggle="dropdown">
+				<img class="img-circle" src="../assets/demo/avatar/avatar_11.png" alt="" />
+		  </a>
+
+<ul class="dropdown-menu userinfo arrow">
+				<li><a href="../profile/"><i class="ti ti-user"></i><span>Profile</span></a></li>
+				<li><a href="../profilepwd/"><i class="ti ti-settings"></i><span>Changer mot de passe</span></a></li>
+			
+				
+				<li class="divider"></li>
+					<li><a href="../reglements/"><i class="ti  ti-info-alt"></i><span>Règlements et directives</span></a></li>
+				<li class="divider"></li>
+				<li><a href="?out"><i class="ti ti-shift-right"></i><span>Se déconnecter</span></a></li>
+		  </ul>
+
+<?php } ?>
 		</li>
 
 	</ul>
@@ -116,9 +373,8 @@
 
 						<ul class="acc-menu">
 				<li><a href="../activation/">Création - Activation</a></li>
-				<li><a href="../resetpassword/">Changer le mot de passe</a></li>
-				<li><a href="../reglementmotdepasse/">Règles pour le mot de passe</a></li>
 				<li><a href="../blocage/">Blocage - fermeture</a></li>
+				<li><a href="../reglementmotdepasse/">Règles pour le mot de passe</a></li>
 				<li><a href="../formulaire/">Formulaires</a></li>
 				
 					
@@ -147,7 +403,7 @@
 				<li><a href="../documentation/"><i class="ti ti-files"></i><span>Documentation</span></a>
 				
 			</li>
-				<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services au personnel</span></a>
+				<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services au personnel</span></a>
 
 				<ul class="acc-menu">
 				<li><a href="../reglements/">Règlements et directives</a></li>
@@ -161,7 +417,7 @@
 			</li>
 
 			
-				<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services aux enseignants</span></a>
+				<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services aux enseignants</span></a>
 			<ul class="acc-menu">
 				<li><a href="../reglements/">Règlements et directives</a></li>
 				<li><a href="../elearning/">E-learning</a></li>
@@ -175,7 +431,7 @@
 			</ul>
 		</li>
 
-		<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services aux étudiants</span></a>
+		<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services aux étudiants</span></a>
 			<ul class="acc-menu">
 
 				<li><a href="../reglements/">Règlements et directives</a></li>
@@ -215,7 +471,7 @@
                         <div class="page-content">
                             <ol class="breadcrumb">
                                 
-<li><a href="#">Home</a></li>
+<li><a href="../">Home</a></li>
 <li><a href="#">Cloud Computing</a></li>
 
 
@@ -242,11 +498,10 @@
 
 				<div class="panel-body" style="display: block;">
 					<p class="m0">
-						Le <b>Centre informatique</b> (Ci) supporte les missions d'enseignement et de recherche de l'Institut Séperieur des Etudes Technologiques de Nabeul, ainsi que son fonctionnement administratif, en lui procurant des services informatiques de qualité basés sur un réseau de campus et sur des technologies fiables et modernes.
-						</p>
+						Le cloud computing, ou l’informatique en nuage, est l'exploitation de la puissance de calcul ou de stockage de serveurs informatiques distants par l'intermédiaire d'un réseau, généralement internet. Le cloud computing se caractérise par sa grande souplesse selon le niveau de compétence de l'utilisateur client, il est possible de demander son machine PaaS ou de se contenter d'utiliser des applicatifs distants en mode SaaS.
+					</p>
 						<p class="m0">
-
-						L'équipe du Ci est formée de professionnels et d'étudiants à l'écoute des besoins des collaborateurs de l'ISETN, diffusant conseils et formation individualisés.
+                    Chaque enseignant et/ou étudiant peut demander une machine de type PaaS ou SaaS selon leur besoin pour faire leur Travaux pratiques.
 
 					</p>
 
@@ -275,16 +530,232 @@
 									 <div class="tile-heading"><span>Cloud Computing</span> </div>
 
 			<div><center><img src="../assets/img/cloud.png" width="125px"></center></div>
-			<div class="tile-footer"><span class="text-primary"><a href="../demandecloud/">Plus détail</a> <i class="fa fa-level-down"></i></span></div>
+			<div class="tile-footer"><span class="text-primary">
+
+			<?php if (isset($_SESSION['access'])) {  
+			if ($_SESSION['access2']=="Personnel") {
+			 ?>
+
+			<a href="" data-toggle="modal" data-target="#interdit" >Demander ce service</a> 
+			
+
+			<?php }else{
+                         ?>
+				<a href="" data-toggle="modal" data-target="#cloud_service" >Demander ce service</a> 
+
+				<?php
+
+			}} else {?> 
+							
+              <a href="../login/?redirect=cloud">Demander ce service</a> 
+
+				<?php } ?>
+				
+			
+
+							
+			<i class="fa fa-level-down"></i></span></div>
 
 		</div>
 	</div>
 
+ <?php if (($totalRows_row_cout_dem > 0) && ($row_row_cout_dem['nom_complet']==$_SESSION['cn']) && ($row_row_cout_dem['id_service']=="2")) { ?>
 
-
+	    <div class="col-md-3">
+	      <div class="pricing hover-effect">
+	        <div class="pricing-head">
+			
+			<?php if($row_row_cout_dem['statut']=="En attente !"){ ?>
+			 <h3>Demande en attente !</h3>
+			 
+			 <?php } else { ?>
+			 
+	          <h3><?php echo $row_row_cout_dem['environement']; ?></h3>
+			  <?php } ?>
+			  
+			      </div>
+				          
+				<div class="pricing-footer">
+				  <br>
+				  <p>Protéger Vos Coordonnées confidentielles contre l'usurpation. </p>
+					
+					<?php if($row_row_cout_dem['statut']=="En attente !"){ ?>
+					
+			 <a href="" data-toggle="modal" data-target="#tel_demande_attente" class="btn yellow-crusta">
+		                Voir plus				      </a>		
+			 
+			 <?php } else { ?>
+			 
+			            <a href="" data-toggle="modal" data-target="#tel_demande" class="btn yellow-crusta">
+		                Voir plus				      </a>				  
+						
+						<?php } ?> 
+						
+				  </div>
+	            </div>
+	          </div>
+	  
+	 <?php } // Show if recordset not empty ?>
 		
 
+							
+						<div class="modal fade" id="tel_demande" >
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+										<h2 class="modal-title">Machine virtuelle <?php echo $row_row_demande['environement']; ?> </h2>
+									</div>
 
+									<form method="POST" action="">
+									<div class="modal-body">
+                                     
+                                        <label>Nom complet</label>
+
+										<input  type="text" value="<?php echo $row_row_demande['nom_complet']; ?>" disabled="disabled" name="nom_complet" class="bootbox-input bootbox-input-text form-control">
+
+									     <br>
+										<label>Utilisateur</label>
+
+										<input  type="text" value="<?php echo $row_row_res_demande['user_session']; ?>" disabled="disabled" name="nom_complet1" class="bootbox-input bootbox-input-text form-control">
+										<br>
+                                        <label>Mot de passe</label>
+
+										<input  type="text" value="<?php echo $row_row_res_demande['password']; ?>" disabled="disabled"  name="mail1" class="bootbox-input bootbox-input-text form-control">
+										
+										<br>
+                                        <label>Accèder au machine</label>
+
+										<a href="<?php echo $row_row_res_demande['url_cloud']; ?>" target="_blank">Cliquer ici</a>
+										
+										
+									
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+										
+									
+									</div>
+									</form>
+									
+					 
+									 
+								</div>
+							</div>
+				</div>
+
+
+
+
+				<div class="modal fade" id="tel_demande_attente" >
+							<div class="modal-dialog">
+								<div class="modal-content">
+									
+									<div class="modal-body">
+										<center><img src="../assets/img/loading.png"><br>
+										<h3>Votre demande est en cours de traitement.</h3>
+										</center>
+
+									</div>
+									
+								</div>
+							</div>
+				</div>
+
+
+				<div class="modal fade" id="interdit" >
+							<div class="modal-dialog">
+								<div class="modal-content">
+									
+									<div class="modal-body">
+										<center><img src="../assets/img/Cancel.png"><br>
+										<h3>Vous n'êtes pas autorisé à accéder à ce service.</h3>
+										</center>
+
+									</div>
+									
+								</div>
+							</div>
+				</div>
+
+
+
+<div class="modal fade" id="cloud_service" >
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+										<h2 class="modal-title">Demande d'un environnement sur le cloud</h2>
+									</div>
+
+  <?php if($totalRows_row_cout_dem < 1){ ?>
+
+
+									<form method="POST" action="demande.php">
+									<div class="modal-body">
+										<label>Nom complet</label>
+
+										<input  type="text" value="<?php  echo $_SESSION['cn']; ?>" name="" disabled="disabled" class="bootbox-input bootbox-input-text form-control">
+										<input  type="text" value="<?php  echo $_SESSION['cn']; ?>"  name="nom_complet" style="display:none;">
+										<br>
+                                        <label>Email</label>
+
+										<input  type="text" value="<?php  echo $_SESSION['user']; ?>" name="" disabled="disabled" class="bootbox-input bootbox-input-text form-control">
+										<input  type="text" value="<?php  echo $_SESSION['user']; ?>"   name="mail" style="display:none;">
+	                                     <br>
+	                                      <label>Catégorie</label>
+
+										<input  type="text" value="<?php   echo $_SESSION['access2']; ?>" disabled="disabled" name="" class="bootbox-input bootbox-input-text form-control">
+										<input  type="text"  value="<?php echo $_SESSION['access2']; ?>" name="categorie" style="display:none;">
+	                                     <br>
+	                                     <label>Type du cloud</label>
+
+										<select name="type_cloud"  required class="bootbox-input bootbox-input-text form-control">
+										   <option value=""></option>
+											<option value="SaaS">SaaS</option>
+											<option value="PaaS">PaaS</option>
+										</select>
+	                                     <br>
+	                                      <label>Environnement</label>
+
+										<select name="environnement" required class="bootbox-input bootbox-input-text form-control">
+										   <option value=""></option>
+											<option value="Ubuntu Desktop">Ubuntu Desktop</option>
+											<option value="Kali Linux">Kali Linux</option>
+											<option value="Ubuntu Server">Ubuntu Server</option>
+											
+										</select>
+	                                     <br>
+										<label>Veuillez préciser votre besoin</label>
+
+										<textarea name="besoin" rows="3" required class="bootbox-input bootbox-input-text form-control"></textarea>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+										<button type="submit" class="btn btn-primary" >Démander ce service</button>
+									
+									</div>
+									</form>
+									
+									
+									 <?php } else if(($totalRows_row_cout_dem >= 1) && ($row_row_cout_dem['id_service']=="2")) { ?>
+									 
+									  <div class="modal-body">
+                        <center>
+                          <img src="../assets/img/Cancel.png"><br>
+                          <h3>Tu n'a pas le droit de demander un environnement cloud.</h3>
+                        </center>
+                      </div>
+					 
+					 <?php } ?>
+					 
+								</div>
+							</div>
+			  </div>
+
+
+
+	
 	
 	
 
@@ -329,7 +800,7 @@
 
 <script type="text/javascript" src="../assets/js/jquery-1.10.2.min.js"></script> 	
 
-
+<script src="../assets/js/bs-modal-fullscreen.js"></script>
 <script type="text/javascript" src="../assets/js/js.js"></script> 	
 
 
@@ -352,6 +823,9 @@
 
 <script type="text/javascript" src="../assets/plugins/nanoScroller/js/jquery.nanoscroller.min.js"></script> <!-- nano scroller -->
 
+
+<script type="text/javascript" src="../assets/plugins/pines-notify/pnotify.min.js"></script>
+
 <script type="text/javascript" src="../assets/js/application.js"></script>
 <script type="text/javascript" src="../assets/demo/demo.js"></script>
 <script type="text/javascript" src="../assets/demo/demo-switcher.js"></script>
@@ -367,3 +841,10 @@
 
 <!-- Mirrored from avenxo.kaijuthemes.com/ui-tiles.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 22 Apr 2017 18:18:17 GMT -->
 </html>
+<?php
+mysql_free_result($row_demande);
+
+mysql_free_result($row_res_demande);
+
+mysql_free_result($row_cout_dem);
+?>

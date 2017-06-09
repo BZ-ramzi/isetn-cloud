@@ -1,9 +1,10 @@
 <?php
 session_start();
 if (isset($_SESSION['access'])) {
-  header ('Location: ../profile/');
+  header ('Location: ../dashboard/');
   exit();
 }
+
 
 
 include("authenticate.php");
@@ -13,9 +14,14 @@ if(isset($_POST['userLogin'])){
 	if(authenticate($_POST['userLogin'],$_POST['userPassword']))
 	{
 		// authentication passed
-		header("Location: ../profile/");
+
+		header("Location: ../dashboard/");
+
 		die();
-	} else {
+	} 
+
+	
+	else {
 		// authentication failed
 		header("Location: ../login/?Login failed");
 		$error = 1;
@@ -30,10 +36,11 @@ if(isset($error) ) echo "Login failed, or rights <br><br /-->";
 if(isset($_GET['out'])) echo "Logout successful";
 ?>
 
-<!DOCTYPE html>
-<html lang="en" class="coming-soon">
 
-<!-- Mirrored from avenxo.kaijuthemes.com/extras-login.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 22 Apr 2017 18:21:21 GMT -->
+
+<!DOCTYPE html>
+<html lang="fr" class="coming-soon">
+
 <head>
     <meta charset="utf-8">
     <title>Connexion | ISETN</title>
@@ -51,14 +58,7 @@ if(isset($_GET['out'])) echo "Logout successful";
       
       <link rel="icon" type="image/x-icon" href="../assets/img/favicon/fav.png" />
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries. Placeholdr.js enables the placeholder attribute -->
-    <!--[if lt IE 9]>
-        <link type="text/css" href="assets/css/ie8.css" rel="stylesheet">
-        <script type="text/javascript" src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
 
-    <!-- The following CSS are included as plugins and can be removed if unused-->
-    
 
     </head>
 
@@ -82,7 +82,7 @@ if(isset($_GET['out'])) echo "Logout successful";
 										<span class="input-group-addon">
 											<i class="ti ti-user"></i>
 										</span>
-										<input type="text" class="form-control" name="userLogin" required  placeholder="Adresse e-mail" >
+										<input type="email" class="form-control" name="userLogin" required  placeholder="Adresse e-mail" >
 									</div>
 		                        </div>
 							</div>
@@ -163,5 +163,5 @@ if(isset($_GET['out'])) echo "Logout successful";
     <!-- End loading page level scripts-->
     </body>
 
-<!-- Mirrored from avenxo.kaijuthemes.com/extras-login.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 22 Apr 2017 18:21:21 GMT -->
+
 </html>

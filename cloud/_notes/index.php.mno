@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<info>
+	<infoitem key="UD_row_demande" value="name:id_demande;datatype:int,name:nom_complet;datatype:string,name:mail;datatype:blob,name:categorie;datatype:string,name:sdomaine;datatype:string,name:besoin;datatype:blob,name:type_cloud;datatype:string,name:environement;datatype:string,name:statut;datatype:string,name:id_service;datatype:int,name:id_utilisateur;datatype:int" />
+	<infoitem key="UD_row_res_demande" value="name:id_resultat;datatype:int,name:extension;datatype:string,name:utilisateur;datatype:string,name:user_session;datatype:string,name:password;datatype:blob,name:url_cloud;datatype:blob,name:mysql_user;datatype:string,name:mysql_db;datatype:string,name:mysql_password;datatype:blob,name:mysql_host;datatype:blob,name:ftp_user;datatype:string,name:ftp_password;datatype:blob,name:ftp_host;datatype:blob,name:site;datatype:string,name:id_demande;datatype:int" />
+	<infoitem key="UD_row_cout_dem" value="name:id_demande;datatype:int,name:nom_complet;datatype:string,name:mail;datatype:blob,name:categorie;datatype:string,name:sdomaine;datatype:string,name:besoin;datatype:blob,name:type_cloud;datatype:string,name:environement;datatype:string,name:statut;datatype:string,name:id_service;datatype:int,name:id_utilisateur;datatype:int" />
+</info>

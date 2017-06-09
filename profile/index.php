@@ -1,4 +1,32 @@
+<?php
 
+error_reporting(0);
+session_start();
+
+if (!isset($_SESSION['access'])) {
+  header ('Location: ../dashboard/');
+  exit();
+}
+
+
+
+
+if(isset($_GET['out'])) {
+	// destroy session
+	session_unset();
+	$_SESSION = array();
+	unset($_SESSION['user'],$_SESSION['access']);
+	session_destroy();
+	header ('Location: ../dashboard/');
+}
+
+
+
+
+
+
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -69,9 +97,16 @@
 		
 	
 		<li class="dropdown toolbar-icon-bg">
+			<?php if (!isset($_SESSION['access'])) {  ?>
+
+
 			<a href="#" class="dropdown-toggle username" data-toggle="dropdown">
 				<img class="img-circle" src="../assets/demo/avatar/avatar_15.png" alt="" />
 			</a>
+
+
+
+
 			<ul class="dropdown-menu userinfo arrow">
 
 			<li><a href="../login/"><i class="ti ti-shift-left"></i><span>Se Connecter</span></a></li>
@@ -80,9 +115,29 @@
 				
 				<li class="divider"></li>
 
-				<li><a href="../resetpassword/"><i class="ti ti-settings"></i><span>Changer mot de passe</span></a></li>
+				<li><a href="../reglements/"><i class="ti  ti-info-alt"></i><span>Règlements et directives</span></a></li>
 			
 			</ul>
+
+<?php } else {?>
+
+
+		<a href="#" class="dropdown-toggle username" data-toggle="dropdown">
+				<img class="img-circle" src="../assets/demo/avatar/avatar_11.png" alt="" />
+			</a>
+
+<ul class="dropdown-menu userinfo arrow">
+				<li><a href="../profile/"><i class="ti ti-user"></i><span>Profile</span></a></li>
+				<li><a href="../profilepwd/"><i class="ti ti-settings"></i><span>Changer mot de passe</span></a></li>
+			
+				
+				<li class="divider"></li>
+					<li><a href="../reglements/"><i class="ti  ti-info-alt"></i><span>Règlements et directives</span></a></li>
+				<li class="divider"></li>
+				<li><a href="?out"><i class="ti ti-shift-right"></i><span>Se déconnecter</span></a></li>
+			</ul>
+
+<?php } ?>
 		</li>
 
 	</ul>
@@ -116,9 +171,8 @@
 
 						<ul class="acc-menu">
 				<li><a href="../activation/">Création - Activation</a></li>
-				<li><a href="../resetpassword/">Changer le mot de passe</a></li>
-				<li><a href="../reglementmotdepasse/">Règles pour le mot de passe</a></li>
 				<li><a href="../blocage/">Blocage - fermeture</a></li>
+				<li><a href="../reglementmotdepasse/">Règles pour le mot de passe</a></li>
 				<li><a href="../formulaire/">Formulaires</a></li>
 				
 					
@@ -148,7 +202,7 @@
 				<li><a href="../documentation/"><i class="ti ti-files"></i><span>Documentation</span></a>
 				
 			</li>
-				<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services au personnel</span></a>
+				<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services au personnel</span></a>
 
 				<ul class="acc-menu">
 				<li><a href="../reglements/">Règlements et directives</a></li>
@@ -162,7 +216,7 @@
 			</li>
 
 			
-				<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services aux enseignants</span></a>
+				<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services aux enseignants</span></a>
 			<ul class="acc-menu">
 				<li><a href="../reglements/">Règlements et directives</a></li>
 				<li><a href="../elearning/">E-learning</a></li>
@@ -176,7 +230,7 @@
 			</ul>
 		</li>
 
-		<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services aux étudiants</span></a>
+		<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services aux étudiants</span></a>
 			<ul class="acc-menu">
 
 				<li><a href="../reglements/">Règlements et directives</a></li>
@@ -216,125 +270,111 @@
                         <div class="page-content">
                             <ol class="breadcrumb">
                                 
-<li><a href="#">Home</a></li>
-<li><a href="#">Bienvenue</a></li>
+<li><a href="../">Home</a></li>
+<li><a href="#">Profile</a></li>
 
 
                             </ol>
-                            <div class="container-fluid">
+                                                   <div class="container-fluid">
+                                 
+<div data-widget-group="group1">
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="panel panel-profile">
+			  <div class="panel-body">
+			    <img src="../assets/demo/avatar/avatar_11.png" class="img-circle">
+			    <div class="name"><?php echo $_SESSION['cn']; ?></div>
+			    <div class="info"><?php echo $_SESSION['access2']?></div>
+			
+			  </div>
+			</div><!-- panel -->
+			<div class="list-group list-group-alternate mb-n nav nav-tabs">
+				<a href="#tab-about" 	role="tab" data-toggle="tab" class="list-group-item active"><i class="ti ti-user"></i> A propos <span class="badge badge-primary">80%</span></a>
+								
+
+				<a href="../profilepwd/" class="list-group-item"><i class="ti ti-pencil"></i> Changer le mot de passe</a>
+			</div>
+		</div><!-- col-sm-3 -->
+		<div class="col-sm-9">
+			<div class="tab-content">
+			
+
+				<div class="tab-pane active" id="tab-about">
+					<div class="panel panel-default">
+					    <div class="panel-heading">
+					    	<h2>A propos</h2>
+					    </div>
+						<div class="panel-body">
+					      
+							<div class="about-area">
+						      	<h4>Informations de base</h4>
+								    <div class="table-responsive">
+								      <table class="table">
+								        <tbody>
+										 
+										 
+
+								          <tr>
+								            <th>Rôle</th>
+								            <td><?php echo $_SESSION['access2']; ?></td>
+								          </tr>
+								     
+								          <tr>
+								            <th>Prénom</th>
+								            <td><?php echo $_SESSION['pr']; ?></td>
+								          </tr>
+
+
+										  <tr>
+								            <th>Nom</th>
+								            <td><?php echo $_SESSION['nom']; ?></td>
+								          </tr>
+								          
+								          
+										   <tr>
+								            <th>E-mail</th>
+								            <td><?php echo $_SESSION['user']; ?></td>
+								          </tr>
+								         
+								         
+								         
+								        </tbody>
+								      </table>
+								    </div>
+							</div>
 							
-					
-<div class="row">
-		<div class="col-md-12">
-		
-			<div class="panel panel-default" data-widget="{&quot;draggable&quot;: &quot;false&quot;}" data-widget-static="" style="visibility: visible; opacity: 1; display: block; transform: translateY(0px);">
-				<div class="panel-heading">
-					<h2>Notre mission</h2>
-					<div class="panel-ctrls" data-actions-container="" data-action-collapse="{&quot;target&quot;: &quot;.panel-body&quot;}">
+							
+							<div class="about-area">
+						      	<h4>Informations de compte </h4>
+								    <div class="table-responsive">
+								      <table class="table">
+								        <tbody>
+								          <tr>
+								            <th >Date de création</th>
+								            <td>
+<?php 
+$d=$_SESSION['datec'];					
+echo substr($d, 6,2)."/".substr($d, 4,2)."/".substr($d, 0,4)." ".substr($d, 8,2).":".substr($d, 10,2).":".substr($d, 12,2);
+ ?>
+							</td>
+								          </tr>
+								        
+								       
+								          
+								        </tbody>
+								      </table>
+								    </div>
+							</div>
+							
+							
+						</div>
+					</div>
+				</div>
+
+			
+
 			
 				
-				</div>
-
-			</div>
-
-
-
-
-
-				<div class="panel-body" style="display: block;">
-					<p class="m0">
-						Le <b>Centre informatique</b> (Ci) supporte les missions d'enseignement et de recherche de l'Institut Séperieur des Etudes Technologiques de Nabeul, ainsi que son fonctionnement administratif, en lui procurant des services informatiques de qualité basés sur un réseau de campus et sur des technologies fiables et modernes.
-						</p>
-						<p class="m0">
-
-						L'équipe du Ci est formée de professionnels et d'étudiants à l'écoute des besoins des collaborateurs de l'ISETN, diffusant conseils et formation individualisés.
-
-					</p>
-
-				</div>
-			</div>
-		</div>
-	</div>
-							
-							
-                                
-<div class="row">
-
-	
-	
-	
-		<div class="col-md-3">
-		<div class="info-tile tile-success" style="visibility: visible; opacity: 1; display: block; transform: translateY(0px);">
-			
-									 <div class="tile-heading"><span>E-mail</span> </div>
-
-			<div><center><img src="../assets/img/mail.png" width="125px"></center></div>
-			<div class="tile-footer"><span class="text-primary"><a href="../mail/">Plus détail</a> <i class="fa fa-level-down"></i></span></div>
-
-		</div>
-	</div>
-	
-	
-	<div class="col-md-3">
-		<div class="info-tile tile-success" style="visibility: visible; opacity: 1; display: block; transform: translateY(0px);">
-			
-									 <div class="tile-heading"><span>Téléphonie IP</span> </div>
-
-			<div><center><img src="../assets/img/voip.png" width="125px"></center></div>
-			<div class="tile-footer"><span class="text-primary"><a href="../telephonie/">Plus détail</a> <i class="fa fa-level-down"></i></span></div>
-
-		</div>
-	</div>
-
-
-
-	
-
-
-
-		<div class="col-md-3">
-		<div class="info-tile tile-success" style="visibility: visible; opacity: 1; display: block; transform: translateY(0px);">
-			
-									 <div class="tile-heading"><span>Téléchargement</span> </div>
-
-			<div><center><img src="../assets/img/telechargement.png" width="125px"></center></div>
-			<div class="tile-footer"><span class="text-primary"><a href="../telechargement/">Plus détail</a> <i class="fa fa-level-down"></i></span></div>
-
-		</div>
-	</div>
-
-
-
-		<div class="col-md-3">
-		<div class="info-tile tile-success" style="visibility: visible; opacity: 1; display: block; transform: translateY(0px);">
-			
-									 <div class="tile-heading"><span>Help desk</span> </div>
-
-			<div><center><img src="../assets/img/help.png" width="125px"></center></div>
-			<div class="tile-footer"><span class="text-primary"><a href="../help/">Plus détail</a> <i class="fa fa-level-down"></i></span></div>
-
-		</div>
-	</div>
-
-
-
-		
-
-
-	
-	
-
-	
-</div>
-
-
-
-
-
-	
-
-
-
 
 
                             </div> <!-- .container-fluid -->
@@ -365,7 +405,7 @@
 
 <script type="text/javascript" src="../assets/js/jquery-1.10.2.min.js"></script> 	
 
-
+<script src="../assets/js/bs-modal-fullscreen.js"></script>
 <script type="text/javascript" src="../assets/js/js.js"></script> 	
 
 

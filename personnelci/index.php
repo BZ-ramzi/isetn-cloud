@@ -1,4 +1,16 @@
+<?php
 
+session_start();
+
+if(isset($_GET['out'])) {
+	// destroy session
+	session_unset();
+	$_SESSION = array();
+	unset($_SESSION['user'],$_SESSION['access']);
+	session_destroy();
+	header ('Location: ../dashboard/');
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -21,6 +33,95 @@
     <link type="text/css" href="../assets/plugins/iCheck/skins/minimal/blue.css" rel="stylesheet">              <!-- iCheck -->
    <link rel="icon" type="image/x-icon" href="../assets/img/favicon/fav.png" />
     
+    <style type="text/css">
+    	
+    	.profile-header-container{
+    margin: 0 auto;
+    text-align: center;
+}
+
+.profile-header-img {
+    padding: 54px;
+}
+
+.profile-header-img > img.img-circle {
+    width: 120px;
+    height: 120px;
+    border: 2px solid #51D2B7;
+}
+
+.profile-header {
+    margin-top: 43px;
+}
+
+/**
+ * Ranking component
+ */
+.rank-label-container {
+    margin-top: -19px;
+    /* z-index: 1000; */
+    text-align: center;
+}
+
+.label.label-default.rank-label {
+    background-color: rgb(81, 210, 183);
+    padding: 5px 10px 5px 10px;
+    border-radius: 27px;
+}
+
+
+
+.nav.nav-justified > li > a { position: relative; }
+.nav.nav-justified > li > a:hover,
+.nav.nav-justified > li > a:focus { background-color: transparent; }
+.nav.nav-justified > li > a > .quote {
+    position: absolute;
+    left: 0px;
+    top: 0;
+    opacity: 0;
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+    background-color: #13c0ba;
+    border-radius: 15px;
+    color: #fff;  
+}
+.nav.nav-justified > li.active > a > .quote { opacity: 1; }
+.nav.nav-justified > li > a > img { box-shadow: 0 0 0 5px #13c0ba; }
+.nav.nav-justified > li > a > img { 
+    max-width: 100%; 
+    opacity: .3; 
+    -webkit-transform: scale(.8,.8);
+            transform: scale(.8,.8);
+    -webkit-transition: all 0.3s 0s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s 0s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.nav.nav-justified > li.active > a > img,
+.nav.nav-justified > li:hover > a > img,
+.nav.nav-justified > li:focus > a > img { 
+    opacity: 1; 
+    -webkit-transform: none;
+            transform: none;
+    -webkit-transition: all 0.3s 0s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s 0s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.tab-pane .tab-inner { padding: 30px 0 20px; }
+
+@media (min-width: 768px) {
+    .nav.nav-justified > li > a > .quote {
+        left: auto;
+        top: auto;
+        right: 20px;
+        bottom: 0px;
+    }  
+}
+
+
+
+
+}
+
+    </style>
 
     </head>
 
@@ -69,9 +170,16 @@
 		
 	
 		<li class="dropdown toolbar-icon-bg">
+				<?php if (!isset($_SESSION['access'])) {  ?>
+
+
 			<a href="#" class="dropdown-toggle username" data-toggle="dropdown">
 				<img class="img-circle" src="../assets/demo/avatar/avatar_15.png" alt="" />
 			</a>
+
+
+
+
 			<ul class="dropdown-menu userinfo arrow">
 
 			<li><a href="../login/"><i class="ti ti-shift-left"></i><span>Se Connecter</span></a></li>
@@ -80,9 +188,29 @@
 				
 				<li class="divider"></li>
 
-				<li><a href="../resetpassword/"><i class="ti ti-settings"></i><span>Changer mot de passe</span></a></li>
+				<li><a href="../reglements/"><i class="ti  ti-info-alt"></i><span>Règlements et directives</span></a></li>
 			
 			</ul>
+
+<?php } else {?>
+
+
+		<a href="#" class="dropdown-toggle username" data-toggle="dropdown">
+				<img class="img-circle" src="../assets/demo/avatar/avatar_11.png" alt="" />
+			</a>
+
+<ul class="dropdown-menu userinfo arrow">
+				<li><a href="../profile/"><i class="ti ti-user"></i><span>Profile</span></a></li>
+				<li><a href="../profilepwd/"><i class="ti ti-settings"></i><span>Changer mot de passe</span></a></li>
+			
+				
+				<li class="divider"></li>
+					<li><a href="../reglements/"><i class="ti  ti-info-alt"></i><span>Règlements et directives</span></a></li>
+				<li class="divider"></li>
+				<li><a href="?out"><i class="ti ti-shift-right"></i><span>Se déconnecter</span></a></li>
+			</ul>
+
+<?php } ?>
 		</li>
 
 	</ul>
@@ -105,7 +233,7 @@
 
 		<ul class="acc-menu">
 				<li><a href="../organisation/">Organisation</a></li>
-				<li><a href="../personnelci/">Personnel du CI</a></li>
+				<li><a href="../personnelci/">Personnel du Ci</a></li>
 					
 			</ul>
 			</li>
@@ -116,9 +244,8 @@
 
 						<ul class="acc-menu">
 				<li><a href="../activation/">Création - Activation</a></li>
-				<li><a href="../resetpassword/">Changer le mot de passe</a></li>
-				<li><a href="../reglementmotdepasse/">Règles pour le mot de passe</a></li>
 				<li><a href="../blocage/">Blocage - fermeture</a></li>
+				<li><a href="../reglementmotdepasse/">Règles pour le mot de passe</a></li>
 				<li><a href="../formulaire/">Formulaires</a></li>
 				
 					
@@ -147,7 +274,7 @@
 				<li><a href="../documentation/"><i class="ti ti-files"></i><span>Documentation</span></a>
 				
 			</li>
-				<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services au personnel</span></a>
+				<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services au personnel</span></a>
 
 				<ul class="acc-menu">
 				<li><a href="../reglements/">Règlements et directives</a></li>
@@ -161,7 +288,7 @@
 			</li>
 
 			
-				<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services aux enseignants</span></a>
+				<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services aux enseignants</span></a>
 			<ul class="acc-menu">
 				<li><a href="../reglements/">Règlements et directives</a></li>
 				<li><a href="../elearning/">E-learning</a></li>
@@ -175,7 +302,7 @@
 			</ul>
 		</li>
 
-		<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services aux étudiants</span></a>
+		<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services aux étudiants</span></a>
 			<ul class="acc-menu">
 
 				<li><a href="../reglements/">Règlements et directives</a></li>
@@ -215,7 +342,7 @@
                         <div class="page-content">
                             <ol class="breadcrumb">
                                 
-<li><a href="#">Home</a></li>
+<li><a href="../">Home</a></li>
 <li><a href="#">Centre Informatique</a></li>
 
 
@@ -224,35 +351,87 @@
 							
 					
 <div class="row">
-		<div class="col-md-12">
-		
-			<div class="panel panel-default" data-widget="{&quot;draggable&quot;: &quot;false&quot;}" data-widget-static="" style="visibility: visible; opacity: 1; display: block; transform: translateY(0px);">
-				<div class="panel-heading">
-					<h2>Personnel du Ci</h2>
-					<div class="panel-ctrls" data-actions-container="" data-action-collapse="{&quot;target&quot;: &quot;.panel-body&quot;}">
-			
-				
-				</div>
+	
+<div class="[ container text-center ]">
+	<div class="[ row ]">
+		<div class="[ col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 ]" role="tabpanel">
+            <div class="[ col-xs-4 col-sm-12 ]">
+                <!-- Nav tabs -->
+                <ul class="[ nav nav-justified ]" id="nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#dustin" aria-controls="dustin" style="padding: 11px 5px;"   role="tab" data-toggle="tab">
+                            <img class="img-circle" src="../assets/demo/avatar/128.jpg" />
+                            <span class="quote"><i class="fa fa-quote-left"></i></span>
+                        </a>
+                    </li>
+                    <li role="presentation" class="">
+                        <a href="#daksh" aria-controls="daksh" style="padding: 11px 5px;"  role="tab" data-toggle="tab">
+                            <img class="img-circle" src="../assets/demo/avatar/128 (1).jpg" />
+                            <span class="quote"><i class="fa fa-quote-left"></i></span>
+                        </a>
+                    </li>
+                    <li role="presentation" class="">
+                        <a href="#anna" aria-controls="anna"  style="padding: 11px 5px;" role="tab" data-toggle="tab">
+                            <img class="img-circle" src="../assets/demo/avatar/128 (2).jpg" />
+                            <span class="quote"><i class="fa fa-quote-left"></i></span>
+                        </a>
+                    </li>
+                    <li role="presentation" class="">
+                        <a href="#wafer" aria-controls="wafer" style="padding: 11px 5px;"  role="tab" data-toggle="tab">
+                            <img class="img-circle" src="../assets/demo/avatar/128 (1).jpg" />
+                            <span class="quote"><i class="fa fa-quote-left"></i></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="[ col-xs-8 col-sm-12 ]">
+                <!-- Tab panes -->
+                <div class="tab-content" id="tabs-collapse">            
+                    <div role="tabpanel" class="tab-pane fade in active" id="dustin">
+                        <div class="tab-inner">                    
+                            <p class="lead">Centre informatique (Ci) de l'Institut Séperieur des Etudes Technologiques de Nabeul.</p>
+                            <hr>
+                            <p><strong class="text-uppercase">Slah ben hmida</strong></p>
+                            <p><em class="text-capitalize"> Directeur du centre informatique</em> à <a href="#">ISETN</a></p>                 
+                        </div>
+                    </div>
+                    
+                    <div role="tabpanel" class="tab-pane fade" id="daksh">
+                        <div class="tab-inner">
+                            <p class="lead">Centre informatique (Ci) de l'Institut Séperieur des Etudes Technologiques de Nabeul.</p>
+                            <hr>
+                            <p><strong class="text-uppercase">Daksh Bhagya</strong></p>
+                            <p><em class="text-capitalize"> Technicien Superieur en Informatique</em> à <a href="#">Département informatique</a></p>
+                        </div>
+                    </div>
+                    
+                    <div role="tabpanel" class="tab-pane fade" id="anna">
+                        <div class="tab-inner">
+                            <p class="lead">Centre informatique (Ci) de l'Institut Séperieur des Etudes Technologiques de Nabeul.</p>
+                            <hr>
+                            <p><strong class="text-uppercase">Anna Pickard</strong></p>
+                            <p><em class="text-capitalize">Technicien Superieur en Informatique</em> à <a href="#">Département genie civil</a></p>
+                        </div> 
+                    </div>
+                    
+                    <div role="tabpanel" class="tab-pane fade" id="wafer">
+                        <div class="tab-inner">
+                            <p class="lead">Centre informatique (Ci) de l'Institut Séperieur des Etudes Technologiques de Nabeul.</p>
+                            <hr>
+                            <p><strong class="text-uppercase">Wafer Baby</strong></p>
+                            <p><em class="text-capitalize"> Technicien Superieur en Informatique</em> à <a href="#">Département Mécanique</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>        
+        </div>
+	</div>
 
-			</div>
 
 
+</div>
 
-
-
-				<div class="panel-body" style="display: block;">
-					<p class="m0">
-						Le <b>Centre informatique</b> (Ci) supporte les missions d'enseignement et de recherche de l'Institut Séperieur des Etudes Technologiques de Nabeul, ainsi que son fonctionnement administratif, en lui procurant des services informatiques de qualité basés sur un réseau de campus et sur des technologies fiables et modernes.
-						</p>
-						<p class="m0">
-
-						L'équipe du Ci est formée de professionnels et d'étudiants à l'écoute des besoins des collaborateurs de l'ISETN, diffusant conseils et formation individualisés.
-
-					</p>
-
-				</div>
-			</div>
-		</div>
+<br><br>
 	</div>
 							
 							
@@ -261,6 +440,8 @@
 
 	
 	
+	
+		
 
 <div class="col-md-3">
 		<div class="info-tile tile-success" style="visibility: visible; opacity: 1; display: block; transform: translateY(0px);">
@@ -382,13 +563,12 @@
 	</div>
 
 
-
-
 		
 
 
 	
 	
+
 
 	
 </div>
@@ -430,7 +610,7 @@
 
 
 <script type="text/javascript" src="../assets/js/jquery-1.10.2.min.js"></script> 	
-
+<script src="../assets/js/bs-modal-fullscreen.js"></script>
 
 <script type="text/javascript" src="../assets/js/js.js"></script> 	
 

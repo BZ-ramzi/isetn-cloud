@@ -1,4 +1,16 @@
+<?php
 
+session_start();
+
+if(isset($_GET['out'])) {
+	// destroy session
+	session_unset();
+	$_SESSION = array();
+	unset($_SESSION['user'],$_SESSION['access']);
+	session_destroy();
+	header ('Location: ../dashboard/');
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -21,6 +33,42 @@
     <link type="text/css" href="../assets/plugins/iCheck/skins/minimal/blue.css" rel="stylesheet">              <!-- iCheck -->
    <link rel="icon" type="image/x-icon" href="../assets/img/favicon/fav.png" />
     
+    <style type="text/css">
+    	
+    	.profile-header-container{
+    margin: 0 auto;
+    text-align: center;
+}
+
+.profile-header-img {
+    padding: 54px;
+}
+
+.profile-header-img > img.img-circle {
+    width: 120px;
+    height: 120px;
+    border: 2px solid #51D2B7;
+}
+
+.profile-header {
+    margin-top: 43px;
+}
+
+/**
+ * Ranking component
+ */
+.rank-label-container {
+    margin-top: -19px;
+    /* z-index: 1000; */
+    text-align: center;
+}
+
+.label.label-default.rank-label {
+    background-color: rgb(81, 210, 183);
+    padding: 5px 10px 5px 10px;
+    border-radius: 27px;
+}
+    </style>
 
     </head>
 
@@ -69,9 +117,16 @@
 		
 	
 		<li class="dropdown toolbar-icon-bg">
+				<?php if (!isset($_SESSION['access'])) {  ?>
+
+
 			<a href="#" class="dropdown-toggle username" data-toggle="dropdown">
 				<img class="img-circle" src="../assets/demo/avatar/avatar_15.png" alt="" />
 			</a>
+
+
+
+
 			<ul class="dropdown-menu userinfo arrow">
 
 			<li><a href="../login/"><i class="ti ti-shift-left"></i><span>Se Connecter</span></a></li>
@@ -80,9 +135,29 @@
 				
 				<li class="divider"></li>
 
-				<li><a href="../resetpassword/"><i class="ti ti-settings"></i><span>Changer mot de passe</span></a></li>
+				<li><a href="../reglements/"><i class="ti  ti-info-alt"></i><span>Règlements et directives</span></a></li>
 			
 			</ul>
+
+<?php } else {?>
+
+
+		<a href="#" class="dropdown-toggle username" data-toggle="dropdown">
+				<img class="img-circle" src="../assets/demo/avatar/avatar_11.png" alt="" />
+			</a>
+
+<ul class="dropdown-menu userinfo arrow">
+				<li><a href="../profile/"><i class="ti ti-user"></i><span>Profile</span></a></li>
+				<li><a href="../profilepwd/"><i class="ti ti-settings"></i><span>Changer mot de passe</span></a></li>
+			
+				
+				<li class="divider"></li>
+					<li><a href="../reglements/"><i class="ti  ti-info-alt"></i><span>Règlements et directives</span></a></li>
+				<li class="divider"></li>
+				<li><a href="?out"><i class="ti ti-shift-right"></i><span>Se déconnecter</span></a></li>
+			</ul>
+
+<?php } ?>
 		</li>
 
 	</ul>
@@ -116,9 +191,8 @@
 
 						<ul class="acc-menu">
 				<li><a href="../activation/">Création - Activation</a></li>
-				<li><a href="../resetpassword/">Changer le mot de passe</a></li>
-				<li><a href="../reglementmotdepasse/">Règles pour le mot de passe</a></li>
 				<li><a href="../blocage/">Blocage - fermeture</a></li>
+				<li><a href="../reglementmotdepasse/">Règles pour le mot de passe</a></li>
 				<li><a href="../formulaire/">Formulaires</a></li>
 				
 					
@@ -147,7 +221,7 @@
 				<li><a href="../documentation/"><i class="ti ti-files"></i><span>Documentation</span></a>
 				
 			</li>
-				<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services au personnel</span></a>
+				<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services au personnel</span></a>
 
 				<ul class="acc-menu">
 				<li><a href="../reglements/">Règlements et directives</a></li>
@@ -161,7 +235,7 @@
 			</li>
 
 			
-				<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services aux enseignants</span></a>
+				<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services aux enseignants</span></a>
 			<ul class="acc-menu">
 				<li><a href="../reglements/">Règlements et directives</a></li>
 				<li><a href="../elearning/">E-learning</a></li>
@@ -175,7 +249,7 @@
 			</ul>
 		</li>
 
-		<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services aux étudiants</span></a>
+		<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services aux étudiants</span></a>
 			<ul class="acc-menu">
 
 				<li><a href="../reglements/">Règlements et directives</a></li>
@@ -216,7 +290,7 @@
                             <ol class="breadcrumb">
                                 
 <li><a href="#">Home</a></li>
-<li><a href="#">Accès comptes identités</a></li>
+<li><a href="#">Centre Informatique</a></li>
 
 
                             </ol>
@@ -224,35 +298,11 @@
 							
 					
 <div class="row">
-		<div class="col-md-12">
-		
-			<div class="panel panel-default" data-widget="{&quot;draggable&quot;: &quot;false&quot;}" data-widget-static="" style="visibility: visible; opacity: 1; display: block; transform: translateY(0px);">
-				<div class="panel-heading">
-					<h2>changement de mot de passe</h2>
-					<div class="panel-ctrls" data-actions-container="" data-action-collapse="{&quot;target&quot;: &quot;.panel-body&quot;}">
-			
-				
-				</div>
-
-			</div>
+	
+<div class="g-page" data-width="400" data-href="//plus.google.com/u/0/118300366385888212219" data-showcoverphoto="false" data-rel="publisher"></div>
+	</div>
 
 
-
-
-
-				<div class="panel-body" style="display: block;">
-					<p class="m0">
-						Le <b>Centre informatique</b> (Ci) supporte les missions d'enseignement et de recherche de l'Institut Séperieur des Etudes Technologiques de Nabeul, ainsi que son fonctionnement administratif, en lui procurant des services informatiques de qualité basés sur un réseau de campus et sur des technologies fiables et modernes.
-						</p>
-						<p class="m0">
-
-						L'équipe du Ci est formée de professionnels et d'étudiants à l'écoute des besoins des collaborateurs de l'ISETN, diffusant conseils et formation individualisés.
-
-					</p>
-
-				</div>
-			</div>
-		</div>
 	</div>
 							
 							
@@ -390,6 +440,7 @@
 	
 	
 
+
 	
 </div>
 
@@ -430,7 +481,7 @@
 
 
 <script type="text/javascript" src="../assets/js/jquery-1.10.2.min.js"></script> 	
-
+<script src="../assets/js/bs-modal-fullscreen.js"></script>
 
 <script type="text/javascript" src="../assets/js/js.js"></script> 	
 

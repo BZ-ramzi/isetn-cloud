@@ -1,4 +1,16 @@
+<?php
 
+session_start();
+
+if(isset($_GET['out'])) {
+	// destroy session
+	session_unset();
+	$_SESSION = array();
+	unset($_SESSION['user'],$_SESSION['access']);
+	session_destroy();
+	header ('Location: ../dashboard/');
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -69,9 +81,16 @@
 		
 	
 		<li class="dropdown toolbar-icon-bg">
+			<?php if (!isset($_SESSION['access'])) {  ?>
+
+
 			<a href="#" class="dropdown-toggle username" data-toggle="dropdown">
 				<img class="img-circle" src="../assets/demo/avatar/avatar_15.png" alt="" />
 			</a>
+
+
+
+
 			<ul class="dropdown-menu userinfo arrow">
 
 			<li><a href="../login/"><i class="ti ti-shift-left"></i><span>Se Connecter</span></a></li>
@@ -80,9 +99,29 @@
 				
 				<li class="divider"></li>
 
-				<li><a href="../resetpassword/"><i class="ti ti-settings"></i><span>Changer mot de passe</span></a></li>
+				<li><a href="../reglements/"><i class="ti  ti-info-alt"></i><span>Règlements et directives</span></a></li>
 			
 			</ul>
+
+<?php } else {?>
+
+
+		<a href="#" class="dropdown-toggle username" data-toggle="dropdown">
+				<img class="img-circle" src="../assets/demo/avatar/avatar_11.png" alt="" />
+			</a>
+
+<ul class="dropdown-menu userinfo arrow">
+				<li><a href="../profile/"><i class="ti ti-user"></i><span>Profile</span></a></li>
+				<li><a href="../profilepwd/"><i class="ti ti-settings"></i><span>Changer mot de passe</span></a></li>
+			
+				
+				<li class="divider"></li>
+					<li><a href="../reglements/"><i class="ti  ti-info-alt"></i><span>Règlements et directives</span></a></li>
+				<li class="divider"></li>
+				<li><a href="?out"><i class="ti ti-shift-right"></i><span>Se déconnecter</span></a></li>
+			</ul>
+
+<?php } ?>
 		</li>
 
 	</ul>
@@ -116,9 +155,8 @@
 
 						<ul class="acc-menu">
 				<li><a href="../activation/">Création - Activation</a></li>
-				<li><a href="../resetpassword/">Changer le mot de passe</a></li>
-				<li><a href="../reglementmotdepasse/">Règles pour le mot de passe</a></li>
 				<li><a href="../blocage/">Blocage - fermeture</a></li>
+				<li><a href="../reglementmotdepasse/">Règles pour le mot de passe</a></li>
 				<li><a href="../formulaire/">Formulaires</a></li>
 				
 					
@@ -147,7 +185,7 @@
 				<li><a href="../documentation/"><i class="ti ti-files"></i><span>Documentation</span></a>
 				
 			</li>
-				<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services au personnel</span></a>
+				<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services au personnel</span></a>
 
 				<ul class="acc-menu">
 				<li><a href="../reglements/">Règlements et directives</a></li>
@@ -161,7 +199,7 @@
 			</li>
 
 			
-				<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services aux enseignants</span></a>
+				<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services aux enseignants</span></a>
 			<ul class="acc-menu">
 				<li><a href="../reglements/">Règlements et directives</a></li>
 				<li><a href="../elearning/">E-learning</a></li>
@@ -175,7 +213,7 @@
 			</ul>
 		</li>
 
-		<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services aux étudiants</span></a>
+		<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services aux étudiants</span></a>
 			<ul class="acc-menu">
 
 				<li><a href="../reglements/">Règlements et directives</a></li>
@@ -215,7 +253,7 @@
                         <div class="page-content">
                             <ol class="breadcrumb">
                                 
-<li><a href="#">Home</a></li>
+<li><a href="../">Home</a></li>
 <li><a href="#">Règlements et directives</a></li>
 
 
@@ -242,13 +280,12 @@
 
 				<div class="panel-body" style="display: block;">
 					<p class="m0">
-						Le <b>Centre informatique</b> (Ci) supporte les missions d'enseignement et de recherche de l'Institut Séperieur des Etudes Technologiques de Nabeul, ainsi que son fonctionnement administratif, en lui procurant des services informatiques de qualité basés sur un réseau de campus et sur des technologies fiables et modernes.
-						</p>
-						<p class="m0">
-
-						L'équipe du Ci est formée de professionnels et d'étudiants à l'écoute des besoins des collaborateurs de l'ISETN, diffusant conseils et formation individualisés.
-
+						Les membres de la communauté universitaire sont autorisés à utiliser les ressources informatiques mises à leur disposition par l'ISETN à condition de respecter les lois, règlements et directives officiels. De plus il leur est expressément recommandé de suivre les consignes de sécurité informatique pour protéger le fruit de leur travaux.
 					</p>
+					<p class="m0">
+                   <a href="..\documentation\doc.pdf" target="blanck"><img src="..\assets\img\doc.png" width="30px">Télécharger le document de Règlements et directives</a> 
+					</p>
+						
 
 				</div>
 			</div>
@@ -259,6 +296,20 @@
                                 
 <div class="row">
 
+	
+	
+	
+
+<div class="col-md-3">
+		<div class="info-tile tile-success" style="visibility: visible; opacity: 1; display: block; transform: translateY(0px);">
+			
+									 <div class="tile-heading"><span>E-learning</span> </div>
+
+			<div><center><img src="../assets/img/elearning.png" width="125px"></center></div>
+			<div class="tile-footer"><span class="text-primary"><a href="../elearning/">Plus détail</a> <i class="fa fa-level-down"></i></span></div>
+
+		</div>
+	</div>
 	
 	
 	
@@ -298,6 +349,59 @@
 
 			<div><center><img src="../assets/img/telechargement.png" width="125px"></center></div>
 			<div class="tile-footer"><span class="text-primary"><a href="../telechargement/">Plus détail</a> <i class="fa fa-level-down"></i></span></div>
+
+		</div>
+	</div>
+
+
+
+<div class="col-md-3">
+		<div class="info-tile tile-success" style="visibility: visible; opacity: 1; display: block; transform: translateY(0px);">
+			
+									 <div class="tile-heading"><span>Hébergement</span> </div>
+
+			<div><center><img src="../assets/img/hebergement.png" width="125px"></center></div>
+			<div class="tile-footer"><span class="text-primary"><a href="../hebergement/">Plus détail</a> <i class="fa fa-level-down"></i></span></div>
+
+		</div>
+	</div>
+
+
+
+
+	<div class="col-md-3">
+		<div class="info-tile tile-success" style="visibility: visible; opacity: 1; display: block; transform: translateY(0px);">
+			
+									 <div class="tile-heading"><span>Bureau Virtuel</span> </div>
+
+			<div><center><img src="../assets/img/bureau.png" width="125px"></center></div>
+			<div class="tile-footer"><span class="text-primary"><a href="../bureau/">Plus détail</a> <i class="fa fa-level-down"></i></span></div>
+
+		</div>
+	</div>
+
+
+
+	<div class="col-md-3">
+		<div class="info-tile tile-success" style="visibility: visible; opacity: 1; display: block; transform: translateY(0px);">
+			
+									 <div class="tile-heading"><span>Bureau à distance</span> </div>
+
+			<div><center><img src="../assets/img/bureaudist.png" width="125px"></center></div>
+			<div class="tile-footer"><span class="text-primary"><a href="../bureau/">Plus détail</a> <i class="fa fa-level-down"></i></span></div>
+
+		</div>
+	</div>
+
+
+
+		<div class="col-md-3">
+		<div class="info-tile tile-success" style="visibility: visible; opacity: 1; display: block; transform: translateY(0px);">
+			
+									 <div class="tile-heading"><span>Cloud Computing</span> </div>
+
+			<div><center><img src="../assets/img/cloud.png" width="125px"></center></div>
+			<div class="tile-footer"><span class="text-primary"><a href="../cloud/">Plus détail</a> <i class="fa fa-level-down"></i></span></div>
 
 		</div>
 	</div>
@@ -364,7 +468,7 @@
 
 <script type="text/javascript" src="../assets/js/jquery-1.10.2.min.js"></script> 	
 
-
+<script src="../assets/js/bs-modal-fullscreen.js"></script>
 <script type="text/javascript" src="../assets/js/js.js"></script> 	
 
 

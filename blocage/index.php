@@ -1,4 +1,16 @@
+<?php
 
+session_start();
+
+if(isset($_GET['out'])) {
+	// destroy session
+	session_unset();
+	$_SESSION = array();
+	unset($_SESSION['user'],$_SESSION['access']);
+	session_destroy();
+	header ('Location: ../dashboard/');
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -69,9 +81,16 @@
 		
 	
 		<li class="dropdown toolbar-icon-bg">
+			<?php if (!isset($_SESSION['access'])) {  ?>
+
+
 			<a href="#" class="dropdown-toggle username" data-toggle="dropdown">
 				<img class="img-circle" src="../assets/demo/avatar/avatar_15.png" alt="" />
 			</a>
+
+
+
+
 			<ul class="dropdown-menu userinfo arrow">
 
 			<li><a href="../login/"><i class="ti ti-shift-left"></i><span>Se Connecter</span></a></li>
@@ -80,9 +99,29 @@
 				
 				<li class="divider"></li>
 
-				<li><a href="../resetpassword/"><i class="ti ti-settings"></i><span>Changer mot de passe</span></a></li>
+				<li><a href="../reglements/"><i class="ti  ti-info-alt"></i><span>Règlements et directives</span></a></li>
 			
 			</ul>
+
+<?php } else {?>
+
+
+		<a href="#" class="dropdown-toggle username" data-toggle="dropdown">
+				<img class="img-circle" src="../assets/demo/avatar/avatar_11.png" alt="" />
+			</a>
+
+<ul class="dropdown-menu userinfo arrow">
+				<li><a href="../profile/"><i class="ti ti-user"></i><span>Profile</span></a></li>
+				<li><a href="../profilepwd/"><i class="ti ti-settings"></i><span>Changer mot de passe</span></a></li>
+			
+				
+				<li class="divider"></li>
+					<li><a href="../reglements/"><i class="ti  ti-info-alt"></i><span>Règlements et directives</span></a></li>
+				<li class="divider"></li>
+				<li><a href="?out"><i class="ti ti-shift-right"></i><span>Se déconnecter</span></a></li>
+			</ul>
+
+<?php } ?>
 		</li>
 
 	</ul>
@@ -116,9 +155,8 @@
 
 						<ul class="acc-menu">
 				<li><a href="../activation/">Création - Activation</a></li>
-				<li><a href="../resetpassword/">Changer le mot de passe</a></li>
-				<li><a href="../reglementmotdepasse/">Règles pour le mot de passe</a></li>
 				<li><a href="../blocage/">Blocage - fermeture</a></li>
+				<li><a href="../reglementmotdepasse/">Règles pour le mot de passe</a></li>
 				<li><a href="../formulaire/">Formulaires</a></li>
 				
 					
@@ -147,7 +185,7 @@
 				<li><a href="../documentation/"><i class="ti ti-files"></i><span>Documentation</span></a>
 				
 			</li>
-				<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services au personnel</span></a>
+				<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services au personnel</span></a>
 
 				<ul class="acc-menu">
 				<li><a href="../reglements/">Règlements et directives</a></li>
@@ -161,7 +199,7 @@
 			</li>
 
 			
-				<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services aux enseignants</span></a>
+				<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services aux enseignants</span></a>
 			<ul class="acc-menu">
 				<li><a href="../reglements/">Règlements et directives</a></li>
 				<li><a href="../elearning/">E-learning</a></li>
@@ -175,7 +213,7 @@
 			</ul>
 		</li>
 
-		<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services aux étudiants</span></a>
+		<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services aux étudiants</span></a>
 			<ul class="acc-menu">
 
 				<li><a href="../reglements/">Règlements et directives</a></li>
@@ -215,7 +253,7 @@
                         <div class="page-content">
                             <ol class="breadcrumb">
                                 
-<li><a href="#">Home</a></li>
+<li><a href="../">Home</a></li>
 <li><a href="#">Accès comptes identités</a></li>
 
 
@@ -242,13 +280,29 @@
 
 				<div class="panel-body" style="display: block;">
 					<p class="m0">
-						Le <b>Centre informatique</b> (Ci) supporte les missions d'enseignement et de recherche de l'Institut Séperieur des Etudes Technologiques de Nabeul, ainsi que son fonctionnement administratif, en lui procurant des services informatiques de qualité basés sur un réseau de campus et sur des technologies fiables et modernes.
-						</p>
+						<b>Blocage des accès</b></p>
+						<p>
+Pour les étudiants, le blocage des accès est automatique; il est effectué 6 mois après la date d'exmatriculation. Pour les membres du personnel, ce blocage a lieu 6 mois après la fin du contrat de travail.</p>
 						<p class="m0">
 
-						L'équipe du Ci est formée de professionnels et d'étudiants à l'écoute des besoins des collaborateurs de l'ISETN, diffusant conseils et formation individualisés.
-
+						Chacun doit prendre les mesures adéquates pour définir une autre adresse email privée avant le blocage. Il n'est pas accordé de prolongation pour le motif de correspondance email active avec l'email ISETN, quel qu'en soit la teneur (recherche d'emploi, collaboration scientifique, email inscrit sur des publications). 
 					</p>
+					<p>Les personnes, bénéficiant du délai de 6 mois avant le blocage, sont averties par un message email 1 mois avant le blocage.</p>
+					<p class="m0">
+					<b>Fermeture des accès</b></p>
+					<p>
+					La fermeture d'un accès signifie la destruction définitive des données personnelles associées à cet accès. Les données personnelles ne sont pas archivées; il est donc impossible de les récupérer après la fermeture.
+</p>
+<p>
+	Attention, pour de nombreux services, il faut se renseigner auprès des responsables pour  savoir quand sont détruits les donnnées personnelles. Il faut prendre garde en particulier aux services suivants:
+	<ul>
+		<li>Les serveurs de fichiers décentralisés</li>
+		<li>Les applications liées à l'enseignement (moodle)</li>
+	</ul>
+
+
+
+</p>
 
 				</div>
 			</div>
@@ -386,8 +440,7 @@
 		
 
 
-	
-	
+
 
 	
 </div>
@@ -430,7 +483,7 @@
 
 <script type="text/javascript" src="../assets/js/jquery-1.10.2.min.js"></script> 	
 
-
+<script src="../assets/js/bs-modal-fullscreen.js"></script>
 <script type="text/javascript" src="../assets/js/js.js"></script> 	
 
 

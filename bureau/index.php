@@ -1,4 +1,18 @@
+<?php
+error_reporting(0);
 
+session_start();
+
+if(isset($_GET['out'])) {
+	// destroy session
+	session_unset();
+	$_SESSION = array();
+	unset($_SESSION['user'],$_SESSION['access']);
+	session_destroy();
+	header ('Location: ../dashboard/');
+}
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -69,9 +83,18 @@
 		
 	
 		<li class="dropdown toolbar-icon-bg">
+					
+
+<?php if (!isset($_SESSION['access'])) {  ?>
+
+
 			<a href="#" class="dropdown-toggle username" data-toggle="dropdown">
 				<img class="img-circle" src="../assets/demo/avatar/avatar_15.png" alt="" />
 			</a>
+
+
+
+
 			<ul class="dropdown-menu userinfo arrow">
 
 			<li><a href="../login/"><i class="ti ti-shift-left"></i><span>Se Connecter</span></a></li>
@@ -80,9 +103,29 @@
 				
 				<li class="divider"></li>
 
-				<li><a href="../resetpassword/"><i class="ti ti-settings"></i><span>Changer mot de passe</span></a></li>
+				<li><a href="../reglements/"><i class="ti  ti-info-alt"></i><span>Règlements et directives</span></a></li>
 			
 			</ul>
+
+<?php } else {?>
+
+
+		<a href="#" class="dropdown-toggle username" data-toggle="dropdown">
+				<img class="img-circle" src="../assets/demo/avatar/avatar_11.png" alt="" />
+			</a>
+
+<ul class="dropdown-menu userinfo arrow">
+				<li><a href="../profile/"><i class="ti ti-user"></i><span>Profile</span></a></li>
+				<li><a href="../profilepwd/"><i class="ti ti-settings"></i><span>Changer mot de passe</span></a></li>
+			
+				
+				<li class="divider"></li>
+					<li><a href="../reglements/"><i class="ti  ti-info-alt"></i><span>Règlements et directives</span></a></li>
+				<li class="divider"></li>
+				<li><a href="?out"><i class="ti ti-shift-right"></i><span>Se déconnecter</span></a></li>
+			</ul>
+
+<?php } ?>
 		</li>
 
 	</ul>
@@ -116,9 +159,8 @@
 
 						<ul class="acc-menu">
 				<li><a href="../activation/">Création - Activation</a></li>
-				<li><a href="../resetpassword/">Changer le mot de passe</a></li>
-				<li><a href="../reglementmotdepasse/">Règles pour le mot de passe</a></li>
 				<li><a href="../blocage/">Blocage - fermeture</a></li>
+				<li><a href="../reglementmotdepasse/">Règles pour le mot de passe</a></li>
 				<li><a href="../formulaire/">Formulaires</a></li>
 				
 					
@@ -147,7 +189,7 @@
 				<li><a href="../documentation/"><i class="ti ti-files"></i><span>Documentation</span></a>
 				
 			</li>
-				<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services au personnel</span></a>
+				<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services au personnel</span></a>
 
 				<ul class="acc-menu">
 				<li><a href="../reglements/">Règlements et directives</a></li>
@@ -161,7 +203,7 @@
 			</li>
 
 			
-				<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services aux enseignants</span></a>
+				<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services aux enseignants</span></a>
 			<ul class="acc-menu">
 				<li><a href="../reglements/">Règlements et directives</a></li>
 				<li><a href="../elearning/">E-learning</a></li>
@@ -175,7 +217,7 @@
 			</ul>
 		</li>
 
-		<li><a href="javascript:;"><i class="ti ti-gift"></i><span>Services aux étudiants</span></a>
+		<li><a href="javascript:;"><i class="ti ti-arrow-circle-right"></i><span>Services aux étudiants</span></a>
 			<ul class="acc-menu">
 
 				<li><a href="../reglements/">Règlements et directives</a></li>
@@ -215,7 +257,7 @@
                         <div class="page-content">
                             <ol class="breadcrumb">
                                 
-<li><a href="#">Home</a></li>
+<li><a href="../">Home</a></li>
 <li><a href="#">Bureau à distance</a></li>
 
 
@@ -242,13 +284,12 @@
 
 				<div class="panel-body" style="display: block;">
 					<p class="m0">
-						Le <b>Centre informatique</b> (Ci) supporte les missions d'enseignement et de recherche de l'Institut Séperieur des Etudes Technologiques de Nabeul, ainsi que son fonctionnement administratif, en lui procurant des services informatiques de qualité basés sur un réseau de campus et sur des technologies fiables et modernes.
-						</p>
-						<p class="m0">
-
-						L'équipe du Ci est formée de professionnels et d'étudiants à l'écoute des besoins des collaborateurs de l'ISETN, diffusant conseils et formation individualisés.
-
+						Avec la fonctionnalité Connexion Bureau à distance, vous pouvez vous connecter à un ordinateur exécutant Windows depuis un autre ordinateur exécutant Windows qui est connecté au même réseau ou à Internet. Par exemple, vous pouvez utiliser tous les programmes, les fichiers et les ressources réseau de votre ordinateur professionnel depuis votre ordinateur personnel, comme si vous vous trouviez au bureau.
 					</p>
+                    <p class="m0">
+                        Pour que vous puissiez vous connecter à un ordinateur distant, celui-ci doit être allumé, disposer d’une connexion réseau et le Bureau à distance doit être activé dessus. Vous devez par ailleurs disposer d’un accès réseau à l’ordinateur distant, ainsi que des autorisations nécessaires pour vous connecter.
+                        
+                    </p>
 
 				</div>
 			</div>
@@ -268,7 +309,28 @@
 									 <div class="tile-heading"><span>Bureau à distance</span> </div>
 
 			<div><center><img src="../assets/img/bureaudist.png" width="125px"></center></div>
-			<div class="tile-footer"><span class="text-primary"><a href="../bureau/">Plus détail</a> <i class="fa fa-level-down"></i></span></div>
+			<div class="tile-footer"><span class="text-primary">
+
+			
+          
+           <?php 
+           if (isset($_SESSION['access'])) { 
+           	if ($_SESSION['access2']!="Personnel") {  ?>
+
+			<a href="" data-toggle="modal" data-target="#interdit">Manuelle d'utilisation</a>
+
+            <?php } else {?> 
+
+			<a href="../bureau/">Manuelle d'utilisation</a> 
+
+			<?php } }else
+			{
+?>
+<a href="../login/?redirect=bureau">Démander ce service</a> 
+<?php
+				}?>
+
+			<i class="fa fa-level-down"></i></span></div>
 
 		</div>
 	</div>
@@ -280,8 +342,22 @@
 	
 
 
+				<div class="modal fade" id="interdit" >
+							<div class="modal-dialog">
+								<div class="modal-content">
+									
+									<div class="modal-body">
+										<center><img src="../assets/img/Cancel.png"><br>
+										<h3>Vous n'êtes pas autorisé de consulter ce manuelle.</h3>
+										</center>
 
+									</div>
+									
+								</div>
+							</div>
+				</div>
 
+	
 
 	
 	
@@ -326,7 +402,7 @@
 
 
 <script type="text/javascript" src="../assets/js/jquery-1.10.2.min.js"></script> 	
-
+<script src="../assets/js/bs-modal-fullscreen.js"></script>
 
 <script type="text/javascript" src="../assets/js/js.js"></script> 	
 
