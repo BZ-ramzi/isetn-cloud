@@ -1,16 +1,16 @@
 <?php 
 
-require_once('Connections/isetn.php');
+session_start();
 
-mysql_select_db($database_isetn, $isetn);
-$query_row_actualite = "SELECT * FROM anonce WHERE statut='1'";
-$row_actualite = mysql_query($query_row_actualite, $isetn) or die(mysql_error());
-$row_row_actualite = mysql_fetch_assoc($row_actualite);
-$totalRows_row_actualite = mysql_num_rows($row_actualite);
-?>
-<?php
+$isetn = new PDO('mysql:host=localhost;dbname=c1portail', 'c1portail', 'Admin@ci2017');
 
- session_start();
+$row_actualite = $isetn->query("SELECT * FROM anonce WHERE statut='1'");
+$row_row_actualite = $row_actualite->fetch(PDO::FETCH_ASSOC);
+
+$totalRows_row_actualite =$row_actualite->rowCount();
+
+
+
 
 if(isset($_GET['out'])) {
 	// destroy session
@@ -327,7 +327,7 @@ if(isset($_GET['out'])) {
 			     </p>
 				</div>
 		        </div>
-			  <?php } while ($row_row_actualite = mysql_fetch_assoc($row_actualite));
+			  <?php } while ($row_row_actualite = $row_actualite->fetch(PDO::FETCH_ASSOC));
 			  
 			  
 			  } ?>
